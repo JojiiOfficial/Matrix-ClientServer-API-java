@@ -1,12 +1,15 @@
 package de.jojii.matrixclientserver.Bot;
 
+import com.sun.istack.internal.Nullable;
 import de.jojii.matrixclientserver.Bot.Events.RoomEvent;
 import de.jojii.matrixclientserver.Callbacks.*;
 import de.jojii.matrixclientserver.Networking.HttpHelper;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.ObjectOutput;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,7 +66,7 @@ public class Client {
                 isLoggedIn = true;
                 this.loginData = loginData;
                 syncee.startSyncee();
-            }else{
+            } else {
                 loginData.setSuccess(false);
             }
             if (onResponse != null) {
@@ -318,6 +321,56 @@ public class Client {
                 }
             }
         });
+    }
+
+
+    public void createRoom(String preset, String visibility, @Nullable String alias, String name, @Nullable String topic, @Nullable List<String> invitations, @Nullable String roomVersion, DataCallback callback) throws IOException {
+        if (!isLoggedIn)
+            return;
+
+        JSONObject object = new JSONObject();
+        object.put("preset", preset);
+        object.put("visibility", visibility);
+        if(alias != null){
+            object.put("room_alias_name", alias);
+        }
+        if(topic != null){
+            object.put("topic", topic);
+        }
+        if(roomVersion != null){
+            object.put("room_version", roomVersion);
+        }
+        object.put("name", name);
+        if(invitations != null){
+            JSONArray inviteUser = new JSONArray();
+            for(String user : invitations){
+                inviteUser.put(user);
+            }
+            object.put("invite", inviteUser);
+        }
+        createRoom(object, callback);
+    }
+
+    public void createRoom(JSONObject data, DataCallback callback) throws IOException {
+        httpHelper.sendRequestAsync(host, HttpHelper.URLs.client + "createRoom", data, "POST", responsedata -> {
+            if (callback != null) {
+                try {
+                    JSONObject object = new JSONObject((String) responsedata);
+                    if(object.has("room_id")){
+                        callback.onData(object.getString("room_id"));
+                    }else{
+                        callback.onData(object);
+                    }
+                } catch (JSONException ee) {
+                    ee.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public static class Room {
+        public static String public_chat = "public_chat", private_chat = "private_chat", trusted_private_chat = "trusted_private_chat";
+        public static String room_visible = "visible", room_private ="private";
     }
 
     public Client(String host) {

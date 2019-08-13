@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class HttpHelper {
     public static class URLs{
         private static String root = "_matrix/";
-        private static String client = root+"client/r0/";
+        public static String client = root+"client/r0/";
 
         public static String login = client+"login";
         public static String logout = client+"logout";
