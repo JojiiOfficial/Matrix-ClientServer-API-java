@@ -55,4 +55,4 @@ c.login("Y0ur70ken", loginData -> {
 	-	[x] Kick
 	-	[x] Ban
 	-	[x] Unban
-	-	[ ] Create new room
+	-	[x] Create new room
