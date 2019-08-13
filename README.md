@@ -31,6 +31,7 @@ c.login("Y0ur70ken", loginData -> {
 	}
 });
 ```
+For an examplebot you can have a look at my [Grep Bot](https://github.com/JojiiOfficial/Matrix-Grep-Bot/)
 
 ## Features
 
