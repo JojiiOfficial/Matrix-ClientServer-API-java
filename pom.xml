@@ -4,13 +4,13 @@
 
     <groupId>midoricorp</groupId>
     <artifactId>Matrix-ClientServer-API-java</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
 
     <scm>
         <connection>scm:git:https://github.com/midoricorp/Matrix-ClientServer-API-java.git</connection>
         <developerConnection>scm:git:https://github.com/midoricorp/Matrix-ClientServer-API-java.git</developerConnection>
         <url>https://github.com/midoricorp/</url>
-        <tag>Matrix-ClientServer-API-java-1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
