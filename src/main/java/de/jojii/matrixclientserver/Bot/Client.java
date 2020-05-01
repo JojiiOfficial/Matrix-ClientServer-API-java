@@ -1,6 +1,6 @@
 package de.jojii.matrixclientserver.Bot;
 
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 import de.jojii.matrixclientserver.Bot.Events.RoomEvent;
 import de.jojii.matrixclientserver.Callbacks.*;
 import de.jojii.matrixclientserver.Networking.HttpHelper;
