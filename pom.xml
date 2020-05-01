@@ -18,7 +18,7 @@
     <distributionManagement>
         <repository>
             <id>bintray</id>
-            <url>https://api.bintray.com/maven/tsearle/maven/script</url>
+            <url>https://api.bintray.com/maven/tsearle/maven/matrix-client</url>
         </repository>
     </distributionManagement>
 
