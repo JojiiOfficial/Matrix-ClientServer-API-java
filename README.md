@@ -41,6 +41,7 @@ For an examplebot you can have a look at my [Grep Bot](https://github.com/JojiiO
 	
 - Events
 	-	[x] Receive&Send roomevents (join, messages, typing, ....)
+	-	[x] Send files to matrix (thanks to @tsearle)
 	-	[x] Get eventdata by EventID
 	-	[x] Multiple eventlistener
 	-	[x] Receive events happend when bot was offline
