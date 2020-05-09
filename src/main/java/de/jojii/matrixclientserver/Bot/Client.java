@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectOutput;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -368,7 +369,26 @@ public class Client {
         });
     }
 
-    public static class Room {
+    public void sendFile(String contentType, int contentLength, InputStream data, DataCallback callback) throws IOException {
+        httpHelper.sendStreamAsync(host, HttpHelper.URLs.upload,contentType,contentLength,data,true,"POST", responsedata -> {
+            if (callback != null) {
+                try {
+                    JSONObject object = new JSONObject((String) responsedata);
+                    if(object.has("content_uri")){
+                        callback.onData(object.getString("content_uri"));
+                    }else{
+                        callback.onData(object);
+                    }
+                } catch (JSONException ee) {
+                    ee.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+
+        public static class Room {
         public static String public_chat = "public_chat", private_chat = "private_chat", trusted_private_chat = "trusted_private_chat";
         public static String room_visible = "visible", room_private ="private";
     }
