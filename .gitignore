@@ -1,5 +1,6 @@
 nextBatch
 .idea
 Matrix Client-Server Java API.iml
-out/production/
+target/
 src/de/jojii/matrixclientserver/Main.java
+Matrix-ClientServer-API-java.iml
