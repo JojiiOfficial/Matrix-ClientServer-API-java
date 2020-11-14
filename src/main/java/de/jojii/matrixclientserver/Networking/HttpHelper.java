@@ -41,6 +41,7 @@ public class HttpHelper {
         HttpURLConnection http = (HttpURLConnection)con;
         http.setRequestMethod(requestMethod);
         http.setDoOutput(true);
+        http.setReadTimeout(60000);
 
         if(data != null){
             int length = data.toString().length();
