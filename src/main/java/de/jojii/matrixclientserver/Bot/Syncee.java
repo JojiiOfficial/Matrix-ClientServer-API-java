@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Syncee {
+
+    private static final int LONG_POLLING_TIMEOUT = 40000;
+
     private Client c;
     private HttpHelper httpHelper;
     private List<RoomEventsCallback> roomEvents = new ArrayList<>();
@@ -77,7 +80,7 @@ public class Syncee {
     private void runEventListener(String filterID) {
         if (eventListenerThread == null) {
             eventListenerThread = new Thread(() -> {
-                String baseurl = HttpHelper.URLs.sync + "?access_token=" + c.getLoginData().getAccess_token() + "&filter=" + filterID;
+                String baseurl = HttpHelper.URLs.sync + "?access_token=" + c.getLoginData().getAccess_token() + "&filter=" + filterID + "&timeout=" + LONG_POLLING_TIMEOUT;
                 String nextURL = "";
                 try {
                     if(!new File(Files.sync_next_batch).exists()){
