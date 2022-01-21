@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutput;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,7 +19,7 @@ public class Client {
     private String host;
     private LoginData loginData;
     private boolean isLoggedIn = false;
-    private HttpHelper httpHelper = new HttpHelper();
+    private final HttpHelper httpHelper;
     private Syncee syncee;
 
     public void login(String username, String password, LoginCallback onResponse) throws IOException {
@@ -395,9 +394,19 @@ public class Client {
 
     public Client(String host) {
         this.host = host;
+        this.httpHelper = new HttpHelper();
         this.syncee = new Syncee(this, httpHelper);
         if (!host.endsWith("/"))
             this.host += "/";
+    }
+
+    /**
+     * For testing only.
+     */
+    public Client(HttpHelper httpHelper, boolean isLoggedIn) {
+        this.httpHelper = httpHelper;
+        this.syncee = new Syncee(this, httpHelper);
+        this.isLoggedIn = isLoggedIn;
     }
 
     public String getHost() {
