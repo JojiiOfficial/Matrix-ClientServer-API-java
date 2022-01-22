@@ -108,4 +108,15 @@ public class RoomEvent {
     public String getRoom_id() {
         return room_id;
     }
+
+    @Override
+    public String toString() {
+        return "RoomEvent{" +
+                "type='" + type + '\'' +
+                ", event_id='" + event_id + '\'' +
+                ", sender='" + sender + '\'' +
+                ", room_id='" + room_id + '\'' +
+                ", content=" + content +
+                '}';
+    }
 }
