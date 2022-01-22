@@ -84,4 +84,32 @@ class RoomEventTest {
         final List<String> eventTypes = result.stream().map(RoomEvent::getType).collect(Collectors.toList());
         assertEquals(expectedEventTypes, eventTypes);
     }
+
+    @Test
+    void parseAllEvents_file() {
+        final JSONObject json = new JSONObject("{\"rooms\":{\"join\":{\"!mXzFBiCxtFEUwtumFb:example.org\":{\"summary\":{},\"timeline\":{\"limited\":false,\"events\":[{\"event_id\":\"$-e30UNeC64KCaZCSNMzAeJMzYVAncWIgUxAZ_tXl5Zc\",\"sender\":\"@me:example.org\",\"type\":\"m.room.message\",\"content\":{\"body\":\"red.png\",\"msgtype\":\"m.image\",\"url\":\"mxc://example.org/dQRxjroKFYddMfTrpUYrXMRP\",\"info\":{\"xyz.amorgan.blurhash\":\"U#Q[S_xa%~%2r?jZozj[.mkCR5j[%Mj[ayj[\",\"size\":98,\"w\":20,\"h\":20,\"mimetype\":\"image/png\"}}}],\"prev_batch\":\"s10040_44616_313_1252_1209_1_514_625_1\"},\"ephemeral\":{\"events\":[]},\"account_data\":{\"events\":[]},\"state\":{\"events\":[]},\"org.matrix.msc2654.unread_count\":8,\"unread_notifications\":{\"highlight_count\":0,\"notification_count\":8}}}},\"next_batch\":\"s10041_44616_313_1252_1209_1_514_625_1\",\"org.matrix.msc2732.device_unused_fallback_key_types\":[],\"device_one_time_keys_count\":{\"signed_curve25519\":0}}");
+
+        final List<RoomEvent> result = RoomEvent.parseAllEvents(json);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        assertEquals("m.room.message", result.get(0).getType());
+        assertEquals("@me:example.org", result.get(0).getSender());
+        assertEquals("!mXzFBiCxtFEUwtumFb:example.org", result.get(0).getRoom_id());
+    }
+
+    @Test
+    void parseAllEvents_message() {
+        final JSONObject json = new JSONObject("{\"rooms\":{\"join\":{\"!mXzFBiCxtFEUwtumFb:example.org\":{\"summary\":{},\"timeline\":{\"limited\":false,\"events\":[{\"event_id\":\"$ZkWVbGcKhKRwksx65QzHMPQ9p3XG4QP4dDho_5nz-F8\",\"sender\":\"@me:example.org\",\"type\":\"m.room.message\",\"content\":{\"body\":\"Hello, world!\",\"msgtype\":\"m.text\"}}],\"prev_batch\":\"s10041_44624_315_1252_1210_1_514_625_1\"},\"ephemeral\":{\"events\":[]},\"account_data\":{\"events\":[]},\"state\":{\"events\":[]},\"org.matrix.msc2654.unread_count\":9,\"unread_notifications\":{\"highlight_count\":0,\"notification_count\":9}}}},\"next_batch\":\"s10042_44624_315_1252_1210_1_514_625_1\",\"org.matrix.msc2732.device_unused_fallback_key_types\":[],\"device_one_time_keys_count\":{\"signed_curve25519\":0}}");
+
+        final List<RoomEvent> result = RoomEvent.parseAllEvents(json);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        assertEquals("m.room.message", result.get(0).getType());
+        assertEquals("@me:example.org", result.get(0).getSender());
+        assertEquals("!mXzFBiCxtFEUwtumFb:example.org", result.get(0).getRoom_id());
+    }
 }
