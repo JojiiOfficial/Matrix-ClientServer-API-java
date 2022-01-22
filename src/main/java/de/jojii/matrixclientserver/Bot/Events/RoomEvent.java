@@ -31,28 +31,30 @@ public class RoomEvent {
         List<RoomEvent> roomEvents = new ArrayList<>();
         for (String pointTop : POINTS_TOP) {
 
-            if (object.has("rooms")) {
-                final JSONObject rooms = object.getJSONObject("rooms");
+            if (!object.has("rooms"))
+                continue;
 
-                if (rooms.has(pointTop)) {
-                    JSONObject object1 = rooms.getJSONObject(pointTop);
-                    Iterator<String> keys = object1.keys();
+            final JSONObject rooms = object.getJSONObject("rooms");
 
-                    while (keys.hasNext()) {
-                        String key = keys.next();
-                        JSONObject room = object1.getJSONObject(key);
+            if (!rooms.has(pointTop))
+                continue;
 
-                        for (String point : POINTS) {
-                            if (!room.has(point)) {
-                                continue;
-                            }
+            JSONObject object1 = rooms.getJSONObject(pointTop);
+            Iterator<String> keys = object1.keys();
 
-                            JSONArray timeline = room.getJSONObject(point).getJSONArray("events");
-                            for (int i = 0; i < timeline.length(); i++) {
-                                JSONObject event = timeline.getJSONObject(i);
-                                roomEvents.add(fetchRoomEvent(event, key));
-                            }
-                        }
+            while (keys.hasNext()) {
+                String key = keys.next();
+                JSONObject room = object1.getJSONObject(key);
+
+                for (String point : POINTS) {
+                    if (!room.has(point)) {
+                        continue;
+                    }
+
+                    JSONArray timeline = room.getJSONObject(point).getJSONArray("events");
+                    for (int i = 0; i < timeline.length(); i++) {
+                        JSONObject event = timeline.getJSONObject(i);
+                        roomEvents.add(fetchRoomEvent(event, key));
                     }
                 }
             }
