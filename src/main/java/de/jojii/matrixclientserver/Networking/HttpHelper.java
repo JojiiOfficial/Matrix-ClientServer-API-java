@@ -37,11 +37,8 @@ public class HttpHelper {
     }
 
     public String sendRequest(String host, String path, JSONObject data, boolean useAccesstoken, String requestMethod) throws IOException {
-    	//TODO accessToken mit ? oder &
-        String accessTokenParameter = "";
-        
-        //TODO Parameter hinzufügen
-		accessTokenParameter = accessTokenToAdd(useAccesstoken,path);
+
+        String accessTokenParameter = accessTokenToAdd(useAccesstoken,path);
 		String surl = host+path + accessTokenParameter;
         URL obj = new URL(surl);
         URLConnection con = obj.openConnection();
