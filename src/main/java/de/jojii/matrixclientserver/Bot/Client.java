@@ -1,6 +1,7 @@
 package de.jojii.matrixclientserver.Bot;
 
 import org.jetbrains.annotations.Nullable;
+
 import de.jojii.matrixclientserver.Bot.Events.RoomEvent;
 import de.jojii.matrixclientserver.Callbacks.*;
 import de.jojii.matrixclientserver.Networking.HttpHelper;
@@ -12,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +30,7 @@ public class Client {
         object.put("type", "m.login.password");
         object.put("user", username);
         object.put("password", password);
+        
         httpHelper.sendRequestAsync(host, HttpHelper.URLs.login, object, data -> {
             JSONObject object1 = new JSONObject((String) data);
             LoginData loginData = new LoginData();
@@ -48,7 +52,8 @@ public class Client {
             if (onResponse != null) {
                 onResponse.onResponse(loginData);
             }
-        });
+        });    
+        
     }
 
     public void login(String userToken, LoginCallback onResponse) throws IOException {
@@ -323,6 +328,46 @@ public class Client {
         });
     }
 
+    
+    public Collection<Room> getPublicRooms() throws IOException {
+    	if (!isLoggedIn) {
+			return Collections.emptyList();
+		}
+
+        JSONObject ob = new JSONObject();
+
+        
+        RoomDataCallback buildingData = Room.buildRooms();
+        httpHelper.sendRequestAsync(host, HttpHelper.URLs.root+"client/"+ "v3/publicRooms", ob, "GET", buildingData);
+        
+        return buildingData.getRooms();
+    }
+    
+    public void getMessages(String room,DataCallback response) throws IOException {
+        if (!isLoggedIn)
+            return;
+
+
+        httpHelper.sendRequestAsync(host, HttpHelper.URLs.client+ "rooms/"+room+"/messages?limit=10&dir=b&filter={\"lazy_load_members\":true}", null, "GET", data -> {
+            if (response != null) {
+                response.onData(data);
+            }
+        });
+    }
+    
+    
+    public void getJoinedRooms(DataCallback response) throws IOException {
+        if (!isLoggedIn)
+            return;
+
+
+        httpHelper.sendRequestAsync(host, HttpHelper.URLs.root+"client/"+ "v3/joined_rooms", null, "GET", data -> {
+            if (response != null) {
+                response.onData(data);
+            }
+        });
+    }
+    
 
     public void createRoom(String preset, String visibility, @Nullable String alias, String name, @Nullable String topic, @Nullable List<String> invitations, @Nullable String roomVersion, DataCallback callback) throws IOException {
         if (!isLoggedIn)
@@ -387,12 +432,7 @@ public class Client {
 
 
 
-        public static class Room {
-        public static String public_chat = "public_chat", private_chat = "private_chat", trusted_private_chat = "trusted_private_chat";
-        public static String room_visible = "visible", room_private ="private";
-    }
-
-    public Client(String host) {
+        public Client(String host) {
         this.host = host;
         this.httpHelper = new HttpHelper();
         this.syncee = new Syncee(this, httpHelper);

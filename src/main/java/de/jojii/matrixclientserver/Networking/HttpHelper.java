@@ -1,17 +1,22 @@
 package de.jojii.matrixclientserver.Networking;
 
-import de.jojii.matrixclientserver.Callbacks.DataCallback;
-import org.json.JSONObject;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 
+import org.json.JSONObject;
+
+import de.jojii.matrixclientserver.Callbacks.DataCallback;
+
 public class HttpHelper {
     public static class URLs{
-        private static String root = "_matrix/";
+        public static String root = "_matrix/";
         public static String client = root+"client/r0/";
         public static String media = root+"media/r0/";
 
@@ -32,10 +37,12 @@ public class HttpHelper {
     }
 
     public String sendRequest(String host, String path, JSONObject data, boolean useAccesstoken, String requestMethod) throws IOException {
-        String surl = host+path + (useAccesstoken ? "?access_token="+access_token  : "");
-        /*if(!path.contains("sync")){
-            System.out.println(surl);
-        }*/
+    	//TODO accessToken mit ? oder &
+        String accessTokenParameter = "";
+        
+        //TODO Parameter hinzufügen
+		accessTokenParameter = accessTokenToAdd(useAccesstoken,path);
+		String surl = host+path + accessTokenParameter;
         URL obj = new URL(surl);
         URLConnection con = obj.openConnection();
         HttpURLConnection http = (HttpURLConnection)con;
@@ -44,7 +51,6 @@ public class HttpHelper {
         http.setReadTimeout(60000);
 
         if(data != null){
-            int length = data.toString().length();
             http.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         }
 
@@ -56,7 +62,7 @@ public class HttpHelper {
             }
         }
 
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(http.getInputStream(), StandardCharsets.UTF_8))) {
             StringBuilder response = new StringBuilder();
             String responseLine = null;
             while ((responseLine = br.readLine()) != null) {
@@ -71,8 +77,19 @@ public class HttpHelper {
         }
     }
 
+	private String accessTokenToAdd(boolean useAccesstoken, String path) {
+		if (!useAccesstoken) return "";
+		String resultToken ="";
+		if (path.contains("?")) {
+			resultToken = "&";
+		}else {
+			resultToken = "?";
+		}
+		return resultToken + "access_token="+access_token;
+	}
+
     public String sendStream(String host, String path, String contentType, InputStream data, int contentLength, boolean useAccesstoken, String requestMethod) throws IOException {
-        String surl = host+path + (useAccesstoken ? "?access_token="+access_token  : "");
+        String surl = host+path + accessTokenToAdd(useAccesstoken,path);
 
         URL obj = new URL(surl);
         URLConnection con = obj.openConnection();
@@ -146,7 +163,7 @@ public class HttpHelper {
                 String res = sendRequest(host,path,data,useAccesstoken,requestMethod);
                 callback.onData(res);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Problem at retrieving "+e);
             }
         }).start();
     }
