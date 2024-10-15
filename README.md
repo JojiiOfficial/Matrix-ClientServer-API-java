@@ -1,7 +1,20 @@
 
+
 # Matrix-ClientServer-API-java
 A small and simple java API for the Matrix ClientServer Protocol (see [clientServer api](https://matrix.org/docs/spec/client_server/latest))
 The API is still in Beta and known for bugs. If you found or missing a feature one you can create a new issue.
+
+
+Fork of https://github.com/JojiiOfficial/Matrix-ClientServer-API-java with multiple adaptations
+
+* Add Client#getOrCreateDirectChatRoomSync
+* Add Client#getDirectChatRoomsMapSync
+* Add Client#resolveRoomAliasSync
+* Add Client#loginWithJWTSync
+* HttpHelper do not store token, fetch it via Supplier
+* Do not copy info (e.g. derive `isLoggedin` via `loginData`)
+* HttpHelper pass Authorization via HTTP header not as query parameter
+* ...
 
 
 ## Usage
